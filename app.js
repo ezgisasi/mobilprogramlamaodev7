@@ -11,7 +11,6 @@ require('dotenv').config();
 app.use(cors());
 app.use(bodyParser.json());
 
-
 const db = mysql.createConnection({
   host: process.env.DB_HOST,  
   user: process.env.DB_USER, 
@@ -25,59 +24,25 @@ db.connect((err) => {
     return;
   }
   console.log('Veritabanına başarıyla bağlanıldı.');
-
-  db.query('CREATE DATABASE IF NOT EXISTS ogrenciDB', (err, result) => {
-    if (err) {
-      console.error('Veritabanı oluşturulamadı: ' + err.stack);
-      return;
-    }
-    console.log('Veritabanı oluşturuldu ya da zaten var.');
-  
-    db.query('USE ogrenciDB', (err) => {
-      if (err) {
-        console.error('Veritabanı seçilemedi: ' + err.stack);
-        return;
-      }
-
-      const createTableQuery = `
-        CREATE TABLE IF NOT EXISTS ogrenciler (
-          ogrenciID INT AUTO_INCREMENT PRIMARY KEY,
-          ad VARCHAR(100),
-          soyad VARCHAR(100),
-          bolumId INT
-        )
-      `;
-      db.query(createTableQuery, (err, result) => {
-        if (err) {
-          console.error('Tablo oluşturulamadı: ' + err.stack);
-          return;
-        }
-        console.log('Tablo oluşturuldu ya da zaten var.');
-      });
-    });
-  });
 });
-
-
-app.get('/ogrenciler', (req, res) => {
-  db.query('SELECT * FROM ogrenciler', (err, results) => {
-    if (err) {
-      res.status(500).json({ message: 'Veritabanı hatası' });
-      return;
-    }
-    res.json(results);
-  });
-});
-
 
 app.post('/ogrenciler', (req, res) => {
   const { ad, soyad, bolumId } = req.body;
   db.query('INSERT INTO ogrenciler (ad, soyad, bolumId) VALUES (?, ?, ?)', [ad, soyad, bolumId], (err, result) => {
     if (err) {
-      res.status(500).json({ message: 'Öğrenci eklenemedi' });
-      return;
+      return res.status(500).json({ message: 'Öğrenci eklenemedi' });
     }
     res.status(201).json({ message: 'Öğrenci eklendi', id: result.insertId });
+  });
+});
+
+app.delete('/ogrenciler/:id', (req, res) => {
+  const { id } = req.params;
+  db.query('DELETE FROM ogrenciler WHERE ogrenciID = ?', [id], (err, result) => {
+    if (err) {
+      return res.status(500).json({ message: 'Öğrenci silinemedi' });
+    }
+    res.json({ message: 'Öğrenci silindi' });
   });
 });
 
@@ -86,21 +51,9 @@ app.put('/ogrenciler/:id', (req, res) => {
   const { ad, soyad, bolumId } = req.body;
   db.query('UPDATE ogrenciler SET ad = ?, soyad = ?, bolumId = ? WHERE ogrenciID = ?', [ad, soyad, bolumId, id], (err, result) => {
     if (err) {
-      res.status(500).json({ message: 'Öğrenci güncellenemedi' });
-      return;
+      return res.status(500).json({ message: 'Öğrenci güncellenemedi' });
     }
-    res.json({ message: 'Öğrenci güncellendi' });
-  });
-});
-
-app.delete('/ogrenciler/:id', (req, res) => {
-  const { id } = req.params;
-  db.query('DELETE FROM ogrenciler WHERE ogrenciID = ?', [id], (err, result) => {
-    if (err) {
-      res.status(500).json({ message: 'Öğrenci silinemedi' });
-      return;
-    }
-    res.json({ message: 'Öğrenci silindi' });
+    res.json({ message: 'Güncellendi' });
   });
 });
 
