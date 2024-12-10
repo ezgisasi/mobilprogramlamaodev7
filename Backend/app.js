@@ -32,7 +32,7 @@ app.post('/ogrenciler', (req, res) => {
     if (err) {
       return res.status(500).json({ message: 'Öğrenci eklenemedi' });
     }
-    res.status(201).json({ message: 'Öğrenci eklendi', id: result.insertId });
+    res.status(201).json({ message: 'Eklendi', id: result.insertId });
   });
 });
 
@@ -42,7 +42,7 @@ app.delete('/ogrenciler/:id', (req, res) => {
     if (err) {
       return res.status(500).json({ message: 'Öğrenci silinemedi' });
     }
-    res.json({ message: 'Öğrenci silindi' });
+    res.json({ message: 'Silindi' });
   });
 });
 
