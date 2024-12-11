@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../mobilProgramlamaodev7/lib/api_service.dart';
-import '../../mobilProgramlamaodev7/lib/student.dart';
+import 'api_service.dart';
+import 'student.dart';
 
 void main() {
   runApp(MyApp());

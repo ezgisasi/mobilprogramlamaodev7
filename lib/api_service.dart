@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../../odev7/lib/student.dart';
+import 'student.dart';
 
 class ApiService {
-  final String baseUrl = "http://localhost:3000";
+  final String baseUrl = "http://localhost:3000";  // API'nin yerel adresi
 
+  // Öğrencileri listeleme
   Future<List<Student>> fetchStudents() async {
     final response = await http.get(Uri.parse('$baseUrl/students'));
 
@@ -16,6 +17,7 @@ class ApiService {
     }
   }
 
+  // Öğrenci ekleme
   Future<void> addStudent(Student student) async {
     final response = await http.post(
       Uri.parse('$baseUrl/students'),
@@ -28,6 +30,7 @@ class ApiService {
     }
   }
 
+  // Öğrenci güncelleme
   Future<void> updateStudent(Student student) async {
     final response = await http.put(
       Uri.parse('$baseUrl/students/${student.id}'),
@@ -40,6 +43,7 @@ class ApiService {
     }
   }
 
+  // Öğrenci silme
   Future<void> deleteStudent(int id) async {
     final response = await http.delete(
       Uri.parse('$baseUrl/students/$id'),
